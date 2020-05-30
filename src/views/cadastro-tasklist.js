@@ -174,7 +174,7 @@ class CadastroTasklist extends React.Component {
                 </div>
                 <br/>
                 <div className="row">
-                    <div className="col-md-12">
+                    <div className="col-sm-12">
                         <div className="bs-component">
                             <TaskTable tasklist={this.state.task} 
                                         editAction={this.editar}
