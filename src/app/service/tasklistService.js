@@ -10,6 +10,10 @@ class TasklistService extends ApiService {
         return this.get(`/${id}`);
     }
 
+    buscarTodos(){
+        return this.get('/');
+    }
+
     cadastrar(tasklist){
         return this.post('/', tasklist);
     }

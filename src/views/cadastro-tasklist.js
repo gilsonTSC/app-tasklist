@@ -33,17 +33,26 @@ class CadastroTasklist extends React.Component {
         }
         this.service.cadastrar(taskfiltro)
             .then(response => {
+                this.buscarTodos()
+            }).catch(error => {
+                console.log(error)
+            })
+    }
+
+    buscarTodos = () => {
+        this.service.buscarTodos()
+            .then(response => {
                 this.setState({task: response.data})
             }).catch(error => {
                 console.log(error)
             })
     }
 
-    editar =(id) => {
+    editar = (id) => {
         console.log(id)
     }
 
-    deletar =(id) => {
+    deletar = (id) => {
         console.log(id)
     }
 
