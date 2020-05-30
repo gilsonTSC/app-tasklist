@@ -1,4 +1,5 @@
 import ApiService from '../apiService'
+import ErroValidacao from '../exception/ErroValidacao'
 
 class TasklistService extends ApiService {
 
@@ -33,6 +34,21 @@ class TasklistService extends ApiService {
 
     atualizar(id, tasklist){
         return this.put(`/${id}`, tasklist);
+    }
+
+    validar(task){
+        const erros = [];
+
+        if(!task.titulo){
+            erros.push('O preenchimento do campo Título é obrigatório.');
+        }
+        if(!task.status){
+            erros.push('O preenchimento do campo Status é obrigatório.');
+        }
+
+        if(erros && erros.length > 0){
+            throw new ErroValidacao(erros);
+        }
     }
 
 }

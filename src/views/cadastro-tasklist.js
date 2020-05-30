@@ -15,7 +15,8 @@ class CadastroTasklist extends React.Component {
         titulo: '',
         status: '',
         descricao: '',
-        task: []
+        task: [],
+        atualizando: false
     }
 
     constructor(){
@@ -24,24 +25,20 @@ class CadastroTasklist extends React.Component {
     }
 
     componentDidMount(){
-        
+        console.log(this.state.id)
     }
 
     cadastrar = () => {
-        if(!this.state.titulo){
-            mensagemErro('O preenchimento do campo Título é obrigatório');
-            return false;
-        }
-        if(!this.state.status){
-            mensagemErro('O preenchimento do campo Status é obrigatório');
+        const {titulo, status, descricao} = this.state;
+        const taskfiltro = {titulo, status, descricao}
+        try{
+            this.service.validar(taskfiltro);
+        }catch(erro){
+            const msgs = erro.mensagens;
+            msgs.forEach(msg => mensagemErro(msg));
             return false;
         }
 
-        const taskfiltro = {
-            titulo: this.state.titulo,
-            status: this.state.status,
-            descricao: this.state.descricao
-        }
         this.service.cadastrar(taskfiltro)
             .then(response => {
                 mensagemSucesso('Cadastado com sucesso');
@@ -59,17 +56,13 @@ class CadastroTasklist extends React.Component {
             })
     }
 
-    buscarPorId = (id) => {
+    editar = (id) => {
         this.service.buscarPorId(id)
             .then(response => {
-                this.setState({...response.data})
+                this.setState({...response.data, atualizando: true})
             }).catch(error => {
                 mensagemErro(error.response.data);
-            })
-    }
-
-    editar = (id) => {
-        this.buscarPorId(id);
+        })
     }
 
     deletar = (id) => {
@@ -88,17 +81,22 @@ class CadastroTasklist extends React.Component {
 
         this.service.atualizar(id, task).then(response => {
             mensagemSucesso('Atualziado com sucesso');
+            this.setState({atualizando: false})
             this.buscarTodos();
         }).catch(error => {
             mensagemErro(error.response.data);
         })
     }
 
+    cancelar = () => {
+        this.setState({atualizando: false})
+    }
+
     render(){
         const status = this.service.obterListStatus();
 
         return (
-            <Card title="Cadastro de tarefas">
+            <Card title={this.state.atualizando ? 'Atualização de Tarefa' : 'Cadastro de Tarefa'}>
                 <div className="row">
                     <div className="col-md-6">
                         <div className="bs-component">
@@ -123,11 +121,18 @@ class CadastroTasklist extends React.Component {
                                     onChange={e => this.setState({descricao: e.target.value})}
                                     placeholder="Digite a descrição"/>
                             </FormGroup>
-
-                            <button onClick={this.cadastrar} type="button" className="btn btn-success">Cadastrar</button>
-                            <button onClick={this.atualizar} type="button" className="btn btn-success">Atualizar</button>
+                            {
+                                this.state.atualizando ? 
+                                    (
+                                        <>
+                                            <button onClick={this.atualizar} type="button" className="btn btn-success">Atualizar</button>
+                                            <button onClick={this.cancelar} type="button" className="btn btn-danger">Cancelar</button>
+                                        </>
+                                    ) : (
+                                        <button onClick={this.cadastrar} type="button" className="btn btn-success">Cadastrar</button>
+                                    )
+                            }
                             <button onClick={this.buscarTodos} type="button" className="btn btn-success">Buscar</button>
-
                         </div>
                     </div>
                 </div>
