@@ -15,6 +15,7 @@ class CadastroTasklist extends React.Component {
         titulo: '',
         status: '',
         descricao: '',
+        situacao: '',
         task: [],
         atualizando: false
     }
@@ -100,6 +101,17 @@ class CadastroTasklist extends React.Component {
         this.setState({atualizando: false})
     }
 
+    alterarStatus = (task, status) => {
+        this.service
+            .alterarStatus(task.id, status)
+            .then( response => {
+                this.buscarTodos();
+                mensagemSucesso("Status atualizado com sucesso!")
+            }).catch(error => {
+                mensagemErro(error.response.data);
+            })
+    }
+
     render(){
         const status = this.service.obterListStatus();
 
@@ -133,14 +145,30 @@ class CadastroTasklist extends React.Component {
                                 this.state.atualizando ? 
                                     (
                                         <>
-                                            <button onClick={this.atualizar} type="button" className="btn btn-success">Atualizar</button>
-                                            <button onClick={this.cancelar} type="button" className="btn btn-danger">Cancelar</button>
+                                            <button onClick={this.atualizar} 
+                                                    type="button" 
+                                                    className="btn btn-success">
+                                                        <i className="pi pi-refresh"></i> Atualizar
+                                            </button>
+                                            <button onClick={this.cancelar} 
+                                                    type="button" 
+                                                    className="btn btn-danger">
+                                                        <i className="pi pi-times"></i> Cancelar
+                                            </button>
                                         </>
                                     ) : (
-                                        <button onClick={this.cadastrar} type="button" className="btn btn-success">Cadastrar</button>
+                                        <button onClick={this.cadastrar} 
+                                                type="button" 
+                                                className="btn btn-danger">
+                                                     <i className="pi pi-plus"></i>  Cadastrar
+                                        </button>
                                     )
                             }
-                            <button onClick={this.buscarTodos} type="button" className="btn btn-success">Buscar</button>
+                            <button onClick={this.buscarTodos} 
+                                    type="button" 
+                                    className="btn btn-success">
+                                        <i className="pi pi-search"></i> Buscar
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -150,7 +178,8 @@ class CadastroTasklist extends React.Component {
                         <div className="bs-component">
                             <TaskTable tasklist={this.state.task} 
                                         editAction={this.editar}
-                                        deleteAction={this.deletar}/>
+                                        deleteAction={this.deletar}
+                                        alterarStatus={this.alterarStatus}/>
                         </div>
                     </div>
                 </div>

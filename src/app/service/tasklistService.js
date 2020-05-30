@@ -36,6 +36,10 @@ class TasklistService extends ApiService {
         return this.put(`/${id}`, tasklist);
     }
 
+    alterarStatus(id, status){
+        return this.put(`/${id}/atualiza-status`, {status});
+    }
+
     validar(task){
         const erros = [];
 

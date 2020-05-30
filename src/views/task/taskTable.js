@@ -14,14 +14,27 @@ export default props => {
                 <td>{task.remocao}</td>
                 <td>
                     <button type="button" 
-                            className="btn btn-primary"
-                            onClick={e => props.editAction(task.id)}>
-                                Editar
+                            className="btn btn-success" title="Concluir"
+                            disabled={task.status !== 'CANCELADO'}
+                            onClick={e => props.alterarStatus(task, 'CONCLUIDO')}>
+                                <i className="pi pi-check"></i>
+                    </button>
+                    <button type="button"
+                            className="btn btn-warning" title="Cancelar"
+                            disabled={task.status !== 'CONCLUIDO'}
+                            onClick={e => props.alterarStatus(task, 'CANCELADO')}>
+                                <i className="pi pi-times"></i>
                     </button>
                     <button type="button" 
-                            className="btn btn-danger"
+                            className="btn btn-primary" title="Editar"
+                            onClick={e => props.editAction(task.id)}>
+                                <i className="pi pi-pencil"></i>
+                    </button>
+                    <button type="button" 
+                            className="btn btn-danger" title="Deletar"
+                            disabled={task.situacao !== 'ATIVO'}
                             onClick={e => props.deleteAction(task.id)}>
-                                Deletar
+                                <i className="pi pi-trash"></i>
                             </button>
                 </td>
                 <td></td>
