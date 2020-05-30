@@ -2,9 +2,50 @@ import React from 'react'
 import Card from '../components/card'
 import FormGroup from '../components/form-group'
 import SelectMenu from '../components/selectMenu'
-import LancamentosTable from './task/taskTable'
+import TaskTable from './task/taskTable'
+
+import TasklistService from '../app/service/tasklistService'
+
 
 class CadastroTasklist extends React.Component {
+
+    state = {
+        id: '',
+        titulo: '',
+        status: '',
+        descricao: '',
+        criacao: '',
+        edicao: '',
+        remocao: '',
+        task: []
+    }
+
+    constructor(){
+        super();
+        this.service = new TasklistService();
+    }
+
+    cadastrar = () => {
+        const taskfiltro = {
+            titulo: this.state.titulo,
+            status: this.state.status,
+            descricao: this.state.descricao
+        }
+        this.service.cadastrar(taskfiltro)
+            .then(response => {
+                this.setState({task: response.data})
+            }).catch(error => {
+                console.log(error)
+            })
+    }
+
+    editar =(id) => {
+        console.log(id)
+    }
+
+    deletar =(id) => {
+        console.log(id)
+    }
 
     render(){
         const status = [
@@ -14,10 +55,6 @@ class CadastroTasklist extends React.Component {
             {label: 'Cancelado', value: 'CANCELADO'}
         ]
 
-        const tasklist = [
-            {id: 1, titulo: 'Projeto java', status: 'ANDAMENTO', descricao: 'API REST com Spring boot', criacao: '30/05/2020', edicao: '30/05/2020', conclusao: '30/05/2020', remocao: '30/05/2020'}
-        ]
-
         return (
             <Card title="Cadastro de tarefas">
                 <div className="row">
@@ -25,21 +62,27 @@ class CadastroTasklist extends React.Component {
                         <div className="bs-component">
                             <FormGroup htmlFor="inputTitulo" label="Título: *">
                                 <input type="text" className="form-control" 
-                                    id="inputTitulo" 
-                                    aria-describedby="emailHelp" 
+                                    id="inputTitulo"
+                                    value={this.state.titulo}
+                                    onChange={e => this.setState({titulo: e.target.value})}
                                     placeholder="Digite o Título"/>
                             </FormGroup>
                             <FormGroup htmlFor="inputStatus" label="Status: *">
-                                <SelectMenu id="inputStatus" className="form-control" lista={status}/>
+                                <SelectMenu id="inputStatus"
+                                            value={this.state.status}
+                                            onChange={e => this.setState({status: e.target.value})}
+                                            className="form-control" 
+                                            lista={status}/>
                             </FormGroup>
                             <FormGroup htmlFor="inputDescricao" label="Descrição: ">
                                 <input type="text" className="form-control" 
-                                    id="inputDescricao" 
-                                    aria-describedby="emailHelp" 
+                                    id="inputDescricao"
+                                    value={this.state.descricao}
+                                    onChange={e => this.setState({descricao: e.target.value})}
                                     placeholder="Digite a descrição"/>
                             </FormGroup>
 
-                            <button type="button" className="btn btn-success">Cadastrar</button>
+                            <button onClick={this.cadastrar} type="button" className="btn btn-success">Cadastrar</button>
 
                         </div>
                     </div>
@@ -48,7 +91,9 @@ class CadastroTasklist extends React.Component {
                 <div className="row">
                     <div className="col-md-12">
                         <div className="bs-component">
-                            <LancamentosTable tasklist={tasklist}/>
+                            <TaskTable tasklist={this.state.task} 
+                                              deleteAction={this.state.id}
+                                              editAction={this.state.id}/>
                         </div>
                     </div>
                 </div>
