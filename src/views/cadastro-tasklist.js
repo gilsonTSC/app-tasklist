@@ -79,6 +79,14 @@ class CadastroTasklist extends React.Component {
         const {id, titulo, status, descricao} = this.state;
         const task = {id, titulo, status, descricao};
 
+        try{
+            this.service.validar(task);
+        }catch(erro){
+            const msgs = erro.mensagens;
+            msgs.forEach(msg => mensagemErro(msg));
+            return false;
+        }
+
         this.service.atualizar(id, task).then(response => {
             mensagemSucesso('Atualziado com sucesso');
             this.setState({atualizando: false})
