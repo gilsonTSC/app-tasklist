@@ -6,6 +6,15 @@ class TasklistService extends ApiService {
         super('/api/task');
     }
 
+    obterListStatus(){
+        return [
+            {label: 'Selecione...', value: ''},
+            {label: 'Andamento', value: 'ANDAMENTO'},
+            {label: 'Concluido', value: 'CONCLUIDO'},
+            {label: 'Cancelado', value: 'CANCELADO'}
+        ];
+    }
+
     buscarPorId(id){
         return this.get(`/${id}`);
     }
@@ -23,7 +32,7 @@ class TasklistService extends ApiService {
     }
 
     atualizar(id, tasklist){
-        return this.post(`/${id}`, tasklist);
+        return this.put(`/${id}`, tasklist);
     }
 
 }

@@ -3,6 +3,7 @@ import Card from '../components/card'
 import FormGroup from '../components/form-group'
 import SelectMenu from '../components/selectMenu'
 import TaskTable from './task/taskTable'
+import {mensagemSucesso, mensagemErro} from '../components/toastr'
 
 import TasklistService from '../app/service/tasklistService'
 
@@ -14,9 +15,6 @@ class CadastroTasklist extends React.Component {
         titulo: '',
         status: '',
         descricao: '',
-        criacao: '',
-        edicao: '',
-        remocao: '',
         task: []
     }
 
@@ -25,7 +23,20 @@ class CadastroTasklist extends React.Component {
         this.service = new TasklistService();
     }
 
+    componentDidMount(){
+        
+    }
+
     cadastrar = () => {
+        if(!this.state.titulo){
+            mensagemErro('O preenchimento do campo Título é obrigatório');
+            return false;
+        }
+        if(!this.state.status){
+            mensagemErro('O preenchimento do campo Status é obrigatório');
+            return false;
+        }
+
         const taskfiltro = {
             titulo: this.state.titulo,
             status: this.state.status,
@@ -33,9 +44,9 @@ class CadastroTasklist extends React.Component {
         }
         this.service.cadastrar(taskfiltro)
             .then(response => {
-                this.buscarTodos()
+                mensagemSucesso('Cadastado com sucesso');
             }).catch(error => {
-                console.log(error)
+                mensagemErro(error.response.data);
             })
     }
 
@@ -44,25 +55,47 @@ class CadastroTasklist extends React.Component {
             .then(response => {
                 this.setState({task: response.data})
             }).catch(error => {
-                console.log(error)
+                mensagemErro(error.response.data);
+            })
+    }
+
+    buscarPorId = (id) => {
+        this.service.buscarPorId(id)
+            .then(response => {
+                this.setState({...response.data})
+            }).catch(error => {
+                mensagemErro(error.response.data);
             })
     }
 
     editar = (id) => {
-        console.log(id)
+        this.buscarPorId(id);
     }
 
     deletar = (id) => {
-        console.log(id)
+        this.service.deletar(id)
+            .then(response => {
+                mensagemSucesso('Deletado com sucesso');
+                this.buscarTodos();
+            }).catch(error => {
+                mensagemErro(error.response.data);
+            })
+    }
+
+    atualizar = () => {
+        const {id, titulo, status, descricao} = this.state;
+        const task = {id, titulo, status, descricao};
+
+        this.service.atualizar(id, task).then(response => {
+            mensagemSucesso('Atualziado com sucesso');
+            this.buscarTodos();
+        }).catch(error => {
+            mensagemErro(error.response.data);
+        })
     }
 
     render(){
-        const status = [
-            {label: 'Selecione...', value: ''},
-            {label: 'Andamento', value: 'ANDAMENTO'},
-            {label: 'Concluido', value: 'CONCLUIDO'},
-            {label: 'Cancelado', value: 'CANCELADO'}
-        ]
+        const status = this.service.obterListStatus();
 
         return (
             <Card title="Cadastro de tarefas">
@@ -92,6 +125,8 @@ class CadastroTasklist extends React.Component {
                             </FormGroup>
 
                             <button onClick={this.cadastrar} type="button" className="btn btn-success">Cadastrar</button>
+                            <button onClick={this.atualizar} type="button" className="btn btn-success">Atualizar</button>
+                            <button onClick={this.buscarTodos} type="button" className="btn btn-success">Buscar</button>
 
                         </div>
                     </div>
@@ -101,8 +136,8 @@ class CadastroTasklist extends React.Component {
                     <div className="col-md-12">
                         <div className="bs-component">
                             <TaskTable tasklist={this.state.task} 
-                                              deleteAction={this.state.id}
-                                              editAction={this.state.id}/>
+                                        editAction={this.editar}
+                                        deleteAction={this.deletar}/>
                         </div>
                     </div>
                 </div>

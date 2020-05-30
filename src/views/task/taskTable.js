@@ -14,7 +14,7 @@ export default props => {
                 <td>{task.remocao}</td>
                 <td>
                     <button type="button" 
-                            className="btn btn-success"
+                            className="btn btn-primary"
                             onClick={e => props.editAction(task.id)}>
                                 Editar
                     </button>
