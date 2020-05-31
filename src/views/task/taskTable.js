@@ -15,13 +15,13 @@ export default props => {
                 <td>
                     <button type="button" 
                             className="btn btn-success" title="Concluir"
-                            disabled={task.status !== 'CANCELADO'}
+                            disabled={task.status !== 'ANDAMENTO'}
                             onClick={e => props.alterarStatus(task, 'CONCLUIDO')}>
                                 <i className="pi pi-check"></i>
                     </button>
                     <button type="button"
                             className="btn btn-warning" title="Cancelar"
-                            disabled={task.status !== 'CONCLUIDO'}
+                            disabled={task.status !== 'ANDAMENTO'}
                             onClick={e => props.alterarStatus(task, 'CANCELADO')}>
                                 <i className="pi pi-times"></i>
                     </button>

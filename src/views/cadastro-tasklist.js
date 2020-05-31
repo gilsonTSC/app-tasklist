@@ -137,7 +137,7 @@ class CadastroTasklist extends React.Component {
                             <FormGroup htmlFor="inputDescricao" label="Descrição: ">
                                 <input type="text" className="form-control" 
                                     id="inputDescricao"
-                                    value={this.state.descricao}
+                                    value={this.state.descricao || ''}
                                     onChange={e => this.setState({descricao: e.target.value})}
                                     placeholder="Digite a descrição"/>
                             </FormGroup>
