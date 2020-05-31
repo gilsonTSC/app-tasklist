@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const httpClient = axios.create({
-    baseURL: 'https://api-tasklist-spring.herokuapp.com/'
+    baseURL: 'https://api-tasklist-spring.herokuapp.com'
 })
 
 class ApiService {
